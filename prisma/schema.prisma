@@ -1,0 +1,251 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  phone     String?  @unique
+  name      String
+  role      String   @default("CUSTOMER") // CUSTOMER, BARBER, ADMIN
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customerData    CustomerData?
+  barberProfile   BarberProfile?
+  loyaltyPoints   LoyaltyPoint[]
+  notifications   Notification[]
+  bookingsCreated Booking[] @relation("CustomerBookings")
+}
+
+model BarberProfile {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialty   String?
+  experience  Int?    // years
+  bio         String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  schedules   BarberSchedule[]
+  portfolios  Portfolio[]
+  bookings    Booking[]
+  payrolls    Payroll[]
+}
+
+model BarberSchedule {
+  id        Int      @id @default(autoincrement())
+  barberId  Int
+  barber    BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  dayOfWeek Int      // 0=Sunday, 1=Monday, ...
+  startTime String   // HH:mm
+  endTime   String   // HH:mm
+  isDayOff  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([barberId, dayOfWeek])
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  duration    Int      // minutes
+  image       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bookings    Booking[]
+  inventoryUsages InventoryUsage[]
+}
+
+model Portfolio {
+  id        Int      @id @default(autoincrement())
+  barberId  Int
+  barber    BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  caption   String?
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  bookingId Int      @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model Resource {
+  id          Int     @id @default(autoincrement())
+  name        String
+  type        String  // CHAIR, STATION, WASHER, etc.
+  isActive    Boolean @default(true)
+  capacity    Int     @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bookings    Booking[]
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  customer    User     @relation("CustomerBookings", fields: [customerId], references: [id], onDelete: Cascade)
+  barberId    Int
+  barber      BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  serviceId   Int
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  resourceId  Int?
+  resource    Resource? @relation(fields: [resourceId], references: [id], onDelete: SetNull)
+  bookingDate DateTime
+  startTime   String   // HH:mm
+  endTime     String   // HH:mm
+  status      String   @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED, NO_SHOW
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  payment     Payment?
+  review      Review?
+  inventoryUsages InventoryUsage[]
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  bookingId     Int           @unique
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount        Float
+  paidAmount    Float         @default(0)
+  status        String        @default("UNPAID") // UNPAID, PARTIAL, PAID, REFUNDED
+  method        String?       // QRIS, BANK_TRANSFER, CASH, WALLET
+  transactionId String?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model InventoryItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  unit        String   @default("PIECE") // PIECE, ML, GRAM, PACK, ROLL
+  quantity    Float
+  minStock    Float    @default(0)
+  unitCost    Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  usages      InventoryUsage[]
+}
+
+model InventoryUsage {
+  id        Int      @id @default(autoincrement())
+  itemId    Int
+  item      InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  bookingId Int
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  serviceId Int
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  quantity  Float
+  createdAt DateTime @default(now())
+}
+
+model Payroll {
+  id          Int        @id @default(autoincrement())
+  barberId    Int
+  barber      BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  periodStart DateTime
+  periodEnd   DateTime
+  baseSalary  Float      @default(0)
+  commission  Float      @default(0)
+  bonus       Float      @default(0)
+  deductions  Float      @default(0)
+  total       Float
+  type        String     @default("COMMISSION") // COMMISSION, FIXED, HYBRID
+  isPaid      Boolean    @default(false)
+  paidAt      DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CustomerData {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalVisits   Int      @default(0)
+  totalSpent    Float    @default(0)
+  lastVisit     DateTime?
+  preferences   String?  // JSON string: {"style":"fade","product":"pomade"}
+  birthDate     DateTime?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model LoyaltyPoint {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  points      Int      @default(0)
+  description String?
+  expiryDate  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Promo {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  name        String
+  description String?
+  discountType String  // PERCENTAGE, FIXED
+  discountValue Float
+  minSpend    Float?
+  maxUses     Int?
+  usedCount   Int      @default(0)
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  channel   String   @default("PUSH") // WHATSAPP, SMS, EMAIL, PUSH
+  isRead    Boolean  @default(false)
+  sentAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model BusinessSettings {
+  id              Int      @id @default(autoincrement())
+  shopName        String
+  address         String?
+  phone           String?
+  email           String?
+  openingTime     String   @default("09:00")
+  closingTime     String   @default("21:00")
+  slotDuration    Int      @default(30) // minutes
+  allowBookingDays Int     @default(7) // how many days in advance
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

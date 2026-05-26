@@ -1,0 +1,797 @@
+{
+  "info": {
+    "_postman_id": "barbershop-api-collection",
+    "name": "BarberShop API",
+    "description": "Collection untuk testing BarberShop Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000/api" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@barber.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Doe\",\n  \"phone\": \"08123456789\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@barber.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Me (Profile)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/users"
+          }
+        },
+        {
+          "name": "Create User (Admin/Barber)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@barber.com\",\n  \"password\": \"password123\",\n  \"name\": \"New User\",\n  \"role\": \"BARBER\",\n  \"phone\": \"08111111111\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/users/1"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/users/profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"phone\": \"08199999999\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Barbers",
+      "item": [
+        {
+          "name": "List Barbers",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/barbers"
+          }
+        },
+        {
+          "name": "Get Barber By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/barbers/1"
+          }
+        },
+        {
+          "name": "Create Barber",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/barbers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"barber3@barber.com\",\n  \"password\": \"barber123\",\n  \"name\": \"Caca\",\n  \"phone\": \"08222222222\",\n  \"specialty\": \"Undercut\",\n  \"experience\": 2,\n  \"bio\": \"Spesialis undercut modern\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Barber",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/barbers/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialty\": \"Fade + Classic\",\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Set Schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/barbers/1/schedule",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schedules\": [\n    { \"dayOfWeek\": 1, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": false },\n    { \"dayOfWeek\": 2, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": false },\n    { \"dayOfWeek\": 3, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": false },\n    { \"dayOfWeek\": 4, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": false },\n    { \"dayOfWeek\": 5, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": false },\n    { \"dayOfWeek\": 6, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": true },\n    { \"dayOfWeek\": 0, \"startTime\": \"09:00\", \"endTime\": \"21:00\", \"isDayOff\": true }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Availability",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/barbers/1/availability?date=2026-05-12"
+          }
+        },
+        {
+          "name": "Add Portfolio",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/barbers/1/portfolio",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imageUrl\": \"https://example.com/fade1.jpg\",\n  \"caption\": \"Hasil fade terbaik\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Portfolio",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/barbers/1/portfolio/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "List Services",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/services"
+          }
+        },
+        {
+          "name": "Get Service By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/services/1"
+          }
+        },
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/services",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Creambath\",\n  \"description\": \"Perawatan rambut\",\n  \"price\": 45000,\n  \"duration\": 45,\n  \"image\": \"https://example.com/creambath.jpg\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/services/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 55000,\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/services/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barberId\": 1,\n  \"serviceId\": 1,\n  \"bookingDate\": \"2026-05-15\",\n  \"startTime\": \"10:00\",\n  \"resourceId\": 1,\n  \"notes\": \"Mohon datang tepat waktu\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/bookings?status=PENDING&dateFrom=2026-05-01&dateTo=2026-05-31"
+          }
+        },
+        {
+          "name": "Get Booking By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/bookings/1"
+          }
+        },
+        {
+          "name": "Update Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/bookings/1/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reschedule",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/bookings/1/reschedule",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingDate\": \"2026-05-16\",\n  \"startTime\": \"14:00\",\n  \"barberId\": 2,\n  \"resourceId\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/bookings/1/cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "List Payments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/payments"
+          }
+        },
+        {
+          "name": "Get Payment By Booking",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/payments/1"
+          }
+        },
+        {
+          "name": "Record Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/payments/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 30000,\n  \"method\": \"QRIS\",\n  \"transactionId\": \"TRX001\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "List Items",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/inventory"
+          }
+        },
+        {
+          "name": "Create Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/inventory",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pomade Waterbased\",\n  \"description\": \"Pomade hold kuat\",\n  \"unit\": \"PIECE\",\n  \"quantity\": 50,\n  \"minStock\": 5,\n  \"unitCost\": 25000\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Item By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/inventory/1"
+          }
+        },
+        {
+          "name": "Update Item",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/inventory/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 75,\n  \"minStock\": 10\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/inventory/1/stock",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 20\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Item",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/inventory/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resources",
+      "item": [
+        {
+          "name": "List Resources",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/resources"
+          }
+        },
+        {
+          "name": "Create Resource",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/resources",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Chair C\",\n  \"type\": \"CHAIR\",\n  \"capacity\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Resource By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/resources/1"
+          }
+        },
+        {
+          "name": "Update Resource",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/resources/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Resource",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/resources/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Dashboard Overview",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/reports/dashboard"
+          }
+        },
+        {
+          "name": "Revenue Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/reports/revenue?dateFrom=2026-05-01&dateTo=2026-05-31"
+          }
+        },
+        {
+          "name": "Booking Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/reports/bookings?dateFrom=2026-05-01&dateTo=2026-05-31"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payroll",
+      "item": [
+        {
+          "name": "List Payrolls",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/payrolls"
+          }
+        },
+        {
+          "name": "Create Payroll",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/payrolls",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"barberId\": 1,\n  \"periodStart\": \"2026-05-01\",\n  \"periodEnd\": \"2026-05-31\",\n  \"baseSalary\": 1000000,\n  \"commission\": 500000,\n  \"bonus\": 100000,\n  \"deductions\": 0,\n  \"total\": 1600000,\n  \"type\": \"HYBRID\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mark Paid",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/payrolls/1/paid"
+          }
+        },
+        {
+          "name": "Calculate Commission",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/payrolls/calculate/1?periodStart=2026-05-01&periodEnd=2026-05-31&rate=0.4"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers (CRM)",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/customers"
+          }
+        },
+        {
+          "name": "Get My Data",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/customers/me/data"
+          }
+        },
+        {
+          "name": "Update My Data",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/customers/me/data",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preferences\": \"{\\\"style\\\":\\\"fade\\\",\\\"product\\\":\\\"pomade\\\"}\",\n  \"birthDate\": \"1995-08-15\",\n  \"notes\": \"Pelanggan setia\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Points",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/customers/me/points"
+          }
+        },
+        {
+          "name": "Get Customer Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/customers/1/bookings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promos",
+      "item": [
+        {
+          "name": "List Promos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/promos"
+          }
+        },
+        {
+          "name": "Create Promo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/promos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"BARBER10\",\n  \"name\": \"Diskon 10%\",\n  \"description\": \"Diskon 10% untuk semua layanan\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 10,\n  \"minSpend\": 50000,\n  \"maxUses\": 100,\n  \"startDate\": \"2026-05-01\",\n  \"endDate\": \"2026-12-31\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Promo By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/promos/1"
+          }
+        },
+        {
+          "name": "Update Promo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/promos/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Promo",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/promos/1"
+          }
+        },
+        {
+          "name": "Validate Promo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/promos/validate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"BARBER10\",\n  \"spend\": 75000\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List My Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/notifications"
+          }
+        },
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/notifications",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"title\": \"Reminder\",\n  \"message\": \"Booking Anda besok jam 10:00\",\n  \"channel\": \"PUSH\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mark Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/notifications/1/read"
+          }
+        },
+        {
+          "name": "Mark All Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/notifications/read-all"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Business Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/settings"
+          }
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/settings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shopName\": \"BarberShop Elite\",\n  \"address\": \"Jl. Merdeka No. 5\",\n  \"phone\": \"08123456789\",\n  \"email\": \"info@barbershop.com\",\n  \"openingTime\": \"08:00\",\n  \"closingTime\": \"22:00\",\n  \"slotDuration\": 30,\n  \"allowBookingDays\": 14\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "List Reviews",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reviews"
+          }
+        },
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/reviews",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Sangat puas dengan hasil potongannya!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Review By Booking",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reviews/1"
+          }
+        }
+      ]
+    }
+  ]
+}
