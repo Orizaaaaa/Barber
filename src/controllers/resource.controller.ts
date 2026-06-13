@@ -20,7 +20,8 @@ export async function createResource(req: Request, res: Response) {
 
 export async function listResources(req: Request, res: Response) {
   try {
-    const resources = await resourceService.listResources();
+    const activeOnly = req.query.activeOnly === 'true';
+    const resources = await resourceService.listResources(activeOnly);
     return successResponse(res, resources);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to fetch resources';

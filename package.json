@@ -4,7 +4,8 @@
   "description": "Backend API for Barbershop Booking & Management",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "prisma generate && tsx watch src/index.ts",
+    "postinstall": "prisma generate",
     "build": "tsc",
     "start": "node dist/index.js",
     "db:generate": "prisma generate",

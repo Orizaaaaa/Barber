@@ -4,8 +4,12 @@ export async function createResource(data: { name: string; type: string; capacit
   return prisma.resource.create({ data });
 }
 
-export async function listResources() {
-  return prisma.resource.findMany({ orderBy: { createdAt: 'desc' } });
+export async function listResources(activeOnly = false) {
+  const where: Record<string, unknown> = {};
+  if (activeOnly) {
+    where.isActive = true;
+  }
+  return prisma.resource.findMany({ where, orderBy: { createdAt: 'desc' } });
 }
 
 export async function getResourceById(id: number) {

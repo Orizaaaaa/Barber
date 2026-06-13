@@ -4,16 +4,35 @@ import * as bookingService from '../services/booking.service';
 import { successResponse, errorResponse } from '../utils/response';
 
 export const createBookingValidators = [
-  body('barberId').isInt({ min: 1 }),
-  body('serviceId').isInt({ min: 1 }),
-  body('bookingDate').isISO8601(),
+  body('customerName').optional().isString(),
+  body('customerPhone').optional().isString(),
+  body('barberId').custom((value) => {
+    if (value === 'random') return true;
+    if (typeof value === 'number' && value >= 1) return true;
+    if (typeof value === 'string' && !isNaN(Number(value)) && Number(value) >= 1) return true;
+    throw new Error('barberId must be a positive integer or "random"');
+  }),
+  body('serviceId').isInt({ min: 1 }).toInt(),
+  body('date').isISO8601(),
   body('startTime').matches(/^\d{2}:\d{2}$/),
+  body('promoCode').optional().isString().toUpperCase(),
 ];
 
 export async function createBooking(req: Request, res: Response) {
   try {
-    const customerId = req.user!.id;
-    const payload = { ...req.body, customerId, bookingDate: new Date(req.body.bookingDate) };
+    const payload: any = {
+      ...req.body,
+      bookingDate: new Date(req.body.date),
+    };
+
+    // If user is authenticated, use customerId from auth
+    if (req.user) {
+      payload.customerId = req.user.id;
+    }
+
+    // Remove date field as we use bookingDate
+    delete payload.date;
+
     const booking = await bookingService.createBooking(payload);
     return successResponse(res, booking, 'Booking created', 201);
   } catch (err: unknown) {

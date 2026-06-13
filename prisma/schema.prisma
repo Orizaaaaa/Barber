@@ -26,15 +26,18 @@ model User {
 }
 
 model BarberProfile {
-  id          Int     @id @default(autoincrement())
-  userId      Int     @unique
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialty   String?
-  experience  Int?    // years
-  bio         String?
-  isActive    Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               Int     @id @default(autoincrement())
+  userId           Int     @unique
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialty        String?
+  experience       Int?    // years
+  bio              String?
+  isActive         Boolean @default(true)
+  compensationType String  @default("COMMISSION") // COMMISSION, FIXED, HYBRID
+  baseSalary       Float   @default(0)            // gaji pokok bulanan (FIXED / HYBRID)
+  commissionRate   Float   @default(0.3)          // 0–1, persentase dari omzet (COMMISSION / HYBRID)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   schedules   BarberSchedule[]
   portfolios  Portfolio[]
@@ -125,17 +128,21 @@ model Booking {
 }
 
 model Payment {
-  id            Int           @id @default(autoincrement())
-  bookingId     Int           @unique
-  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  amount        Float
-  paidAmount    Float         @default(0)
-  status        String        @default("UNPAID") // UNPAID, PARTIAL, PAID, REFUNDED
-  method        String?       // QRIS, BANK_TRANSFER, CASH, WALLET
-  transactionId String?
-  paidAt        DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id                  Int           @id @default(autoincrement())
+  bookingId           Int           @unique
+  booking             Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount              Float
+  barberSelectionFee  Float         @default(0) // extra fee when user picks specific barber
+  discountAmount      Float         @default(0)
+  promoCode           String?
+  finalAmount         Float         // amount + barberSelectionFee - discountAmount
+  paidAmount          Float         @default(0)
+  status              String        @default("UNPAID") // UNPAID, PARTIAL, PAID, REFUNDED
+  method              String?       // QRIS, BANK_TRANSFER, CASH, WALLET
+  transactionId       String?
+  paidAt              DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 }
 
 model InventoryItem {
@@ -237,15 +244,16 @@ model Notification {
 }
 
 model BusinessSettings {
-  id              Int      @id @default(autoincrement())
-  shopName        String
-  address         String?
-  phone           String?
-  email           String?
-  openingTime     String   @default("09:00")
-  closingTime     String   @default("21:00")
-  slotDuration    Int      @default(30) // minutes
-  allowBookingDays Int     @default(7) // how many days in advance
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                 Int      @id @default(autoincrement())
+  shopName           String
+  address            String?
+  phone              String?
+  email              String?
+  openingTime        String   @default("09:00")
+  closingTime        String   @default("21:00")
+  slotDuration       Int      @default(30) // minutes
+  allowBookingDays   Int      @default(7) // how many days in advance
+  barberSelectionFee Float    @default(10000) // additional fee when user picks specific barber
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

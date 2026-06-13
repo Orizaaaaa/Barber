@@ -6,6 +6,7 @@ import { successResponse, errorResponse } from '../utils/response';
 export const recordPaymentValidators = [
   body('amount').isFloat({ min: 0 }),
   body('method').isIn(['QRIS', 'BANK_TRANSFER', 'CASH', 'WALLET']),
+  body('markCompleted').optional().isBoolean(),
 ];
 
 export async function recordPayment(req: Request, res: Response) {

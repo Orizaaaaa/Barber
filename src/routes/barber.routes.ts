@@ -7,6 +7,8 @@ const router = Router();
 
 router.post('/', authenticate, authorize('ADMIN'), barberController.createBarberValidators, validate, barberController.createBarber);
 router.get('/', barberController.listBarbers);
+router.get('/random', barberController.getRandomBarber);
+router.get('/my-earnings', authenticate, authorize('BARBER'), barberController.getMyEarnings);
 router.get('/:id', barberController.getBarber);
 router.patch('/:id', authenticate, authorize('ADMIN'), barberController.updateBarber);
 router.post('/:id/schedule', authenticate, authorize('ADMIN'), barberController.setSchedule);

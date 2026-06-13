@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "BarberProfile" ADD COLUMN "compensationType" TEXT NOT NULL DEFAULT 'COMMISSION';
+ALTER TABLE "BarberProfile" ADD COLUMN "baseSalary" REAL NOT NULL DEFAULT 0;
+ALTER TABLE "BarberProfile" ADD COLUMN "commissionRate" REAL NOT NULL DEFAULT 0.3;

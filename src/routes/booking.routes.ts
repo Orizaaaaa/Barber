@@ -5,7 +5,7 @@ import { validate } from '../middleware/validation';
 
 const router = Router();
 
-router.post('/', authenticate, authorize('CUSTOMER', 'ADMIN'), bookingController.createBookingValidators, validate, bookingController.createBooking);
+router.post('/', bookingController.createBookingValidators, validate, bookingController.createBooking);
 router.get('/', authenticate, bookingController.listBookings);
 router.get('/:id', authenticate, bookingController.getBooking);
 router.patch('/:id/status', authenticate, authorize('ADMIN', 'BARBER'), bookingController.updateStatus);

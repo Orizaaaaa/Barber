@@ -80,6 +80,43 @@ export async function getAvailability(req: Request, res: Response) {
   }
 }
 
+export async function getRandomBarber(req: Request, res: Response) {
+  try {
+    const dateStr = req.query.date as string;
+    const date = dateStr ? new Date(dateStr) : new Date();
+    const result = await barberService.getRandomBarber(date);
+    if (!result) return errorResponse(res, 'No available barbers for this date', 404);
+    return successResponse(res, result);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to get random barber';
+    return errorResponse(res, message, 400);
+  }
+}
+
+export async function getMyEarnings(req: Request, res: Response) {
+  try {
+    if (!req.user) return errorResponse(res, 'Unauthorized', 401);
+
+    const period = (req.query.period as string) || 'month';
+    const date = req.query.date as string | undefined;
+    if (!['day', 'week', 'month'].includes(period)) {
+      return errorResponse(res, 'Period must be day, week, or month', 400);
+    }
+
+    // Find barber profile by user ID
+    const barberProfile = await (await import('../config/prisma')).prisma.barberProfile.findUnique({
+      where: { userId: req.user.id },
+    });
+    if (!barberProfile) return errorResponse(res, 'Barber profile not found', 404);
+
+    const result = await barberService.getBarberEarnings(barberProfile.id, req.user.id, period as 'day' | 'week' | 'month', date);
+    return successResponse(res, result);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to fetch earnings';
+    return errorResponse(res, message, 400);
+  }
+}
+
 export async function addPortfolio(req: Request, res: Response) {
   try {
     const barberId = Number(req.params.id);
