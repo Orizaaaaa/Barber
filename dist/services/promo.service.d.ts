@@ -1,0 +1,115 @@
+export declare function createPromo(data: {
+    code: string;
+    name: string;
+    description?: string;
+    discountType: string;
+    discountValue: number;
+    minSpend?: number;
+    maxUses?: number;
+    startDate: Date;
+    endDate: Date;
+}): Promise<{
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isActive: boolean;
+    description: string | null;
+    code: string;
+    discountType: string;
+    discountValue: number;
+    minSpend: number | null;
+    maxUses: number | null;
+    usedCount: number;
+    startDate: Date;
+    endDate: Date;
+}>;
+export declare function listPromos(activeOnly?: boolean): Promise<{
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isActive: boolean;
+    description: string | null;
+    code: string;
+    discountType: string;
+    discountValue: number;
+    minSpend: number | null;
+    maxUses: number | null;
+    usedCount: number;
+    startDate: Date;
+    endDate: Date;
+}[]>;
+export declare function getPromoById(id: number): Promise<{
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isActive: boolean;
+    description: string | null;
+    code: string;
+    discountType: string;
+    discountValue: number;
+    minSpend: number | null;
+    maxUses: number | null;
+    usedCount: number;
+    startDate: Date;
+    endDate: Date;
+} | null>;
+export declare function updatePromo(id: number, data: Partial<{
+    name: string;
+    description: string;
+    discountValue: number;
+    isActive: boolean;
+}>): Promise<{
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isActive: boolean;
+    description: string | null;
+    code: string;
+    discountType: string;
+    discountValue: number;
+    minSpend: number | null;
+    maxUses: number | null;
+    usedCount: number;
+    startDate: Date;
+    endDate: Date;
+}>;
+export declare function deletePromo(id: number): Promise<{
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isActive: boolean;
+    description: string | null;
+    code: string;
+    discountType: string;
+    discountValue: number;
+    minSpend: number | null;
+    maxUses: number | null;
+    usedCount: number;
+    startDate: Date;
+    endDate: Date;
+}>;
+export declare function validatePromo(code: string, spend: number): Promise<{
+    promo: {
+        id: number;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
+        isActive: boolean;
+        description: string | null;
+        code: string;
+        discountType: string;
+        discountValue: number;
+        minSpend: number | null;
+        maxUses: number | null;
+        usedCount: number;
+        startDate: Date;
+        endDate: Date;
+    };
+    discount: number;
+}>;
+//# sourceMappingURL=promo.service.d.ts.map
