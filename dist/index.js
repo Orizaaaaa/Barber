@@ -53,8 +53,11 @@ app.use((err, _req, res, _next) => {
     console.error(err);
     res.status(500).json({ success: false, message: err.message || 'Internal Server Error' });
 });
-const PORT = Number(env_1.ENV.PORT);
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+    const PORT = Number(env_1.ENV.PORT) || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
+exports.default = app;
 //# sourceMappingURL=index.js.map

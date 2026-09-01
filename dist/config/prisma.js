@@ -13,7 +13,7 @@ function createPrismaClient() {
             url: tursoUrl,
             authToken: tursoAuthToken,
         });
-        const adapter = new adapter_libsql_1.PrismaLibSql(libsql);
+        const adapter = new adapter_libsql_1.PrismaLibSQL(libsql);
         return new client_1.PrismaClient({
             adapter: adapter,
             log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
